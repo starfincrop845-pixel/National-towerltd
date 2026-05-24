@@ -1,2 +1,323 @@
-# National-towerltd
-Other
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOWER VISION | Official Portal</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        :root { 
+            --blue: #002b5c; 
+            --gold: #ffcc00; 
+            --red: #e63946;
+            --whatsapp: #25d366;
+        }
+        
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f4f7f9; scroll-behavior: smooth; }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--blue); padding: 12px 0;
+            display: flex; justify-content: center; gap: 20px;
+            border-bottom: 3px solid var(--gold);
+        }
+        .top-bar a { color: white; text-decoration: none; font-size: 15px; font-weight: bold; text-transform: uppercase; }
+
+        /* Header */
+        header { 
+            background: white; padding: 10px 5%; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-area img { height: 45px; width: auto; }
+
+        .menu-dropdown { position: relative; }
+        .menu-icon { 
+            font-size: 30px; cursor: pointer; color: var(--blue); font-weight: bold;
+            background: #f0f0f0; padding: 5px 15px; border-radius: 5px;
+        }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; background: white;
+            min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px; z-index: 1000;
+        }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; border-bottom: 1px solid #eee; }
+        .menu-dropdown:hover .dropdown-content { display: block; }
+
+        /* News Ticker */
+        .news-ticker { background: var(--red); color: white; padding: 8px 0; font-weight: bold; font-size: 18px; }
+
+        /* Slider */
+        .slider-container { width: 100%; height: 300px; overflow: hidden; position: relative; background: #000; }
+        .slider-track { display: flex; width: 300%; height: 100%; animation: slide-anim 12s infinite linear; }
+        .slider-track img { width: 33.33%; height: 100%; object-fit: cover; }
+        @keyframes slide-anim {
+            0%, 25% { transform: translateX(0); }
+            33%, 58% { transform: translateX(-33.33%); }
+            66%, 91% { transform: translateX(-66.66%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Container */
+        .container { width: 92%; max-width: 900px; margin: 20px auto; }
+
+        /* Form Cards */
+        .card {
+            background: white; padding: 30px 20px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); margin-bottom: 25px;
+        }
+        h2 { color: var(--blue); text-align: center; margin-bottom: 20px; font-size: 24px; }
+        input, textarea {
+            width: 100%; padding: 15px; margin-bottom: 15px;
+            border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px;
+        }
+        .btn {
+            width: 100%; padding: 18px; border: none; border-radius: 8px;
+            font-size: 18px; font-weight: bold; cursor: pointer; color: white; transition: 0.3s;
+        }
+        .btn-apply { background: #28a745; }
+        .btn-status { background: var(--blue); }
+
+        /* Status Result Box (IMAGE IN BOX) */
+        #status-display-box { display: none; margin-top: 25px; border-top: 3px solid var(--gold); padding-top: 20px; }
+        .client-photo { width: 150px; height: 150px; border-radius: 12px; background: #eee; margin: 0 auto 20px; border: 4px solid var(--blue); display: flex; align-items: center; justify-content: center; font-size: 45px; } /* Updated border-radius for box */
+        .status-info { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 18px; }
+        .status-info b { color: var(--blue); }
+        .badge { background: var(--gold); color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+
+        /* Highlights */
+        .detail-highlight {
+            background: linear-gradient(135deg, #002b5c, #004a8f);
+            color: white; padding: 40px 25px; border-radius: 20px;
+            text-align: center; margin-bottom: 30px; border: 4px solid var(--gold);
+        }
+        .detail-highlight h3 { font-size: 30px; color: var(--gold); margin: 0 0 15px 0; }
+        .detail-highlight p { font-size: 20px; margin: 8px 0; font-weight: bold; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; }
+
+        /* Feedback Grid */
+        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .f-card { background: white; padding: 25px; border-radius: 12px; border-left: 6px solid var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        /* Info Box (Sky Tech) */
+        .info-box { background: white; padding: 35px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--blue); }
+        .info-box h3 { color: var(--blue); margin-bottom: 15px; font-size: 26px; }
+        .info-box p { line-height: 1.8; color: #333; font-size: 17px; margin-bottom: 15px; }
+
+        /* Address Card */
+        .big-address-card {
+            background: white; padding: 50px 35px; border-radius: 20px;
+            border-top: 10px solid var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 40px; margin-bottom: 40px;
+        }
+        .big-address-card h3 { font-size: 28px; color: var(--blue); margin-bottom: 20px; border-bottom: 3px solid var(--gold); display: inline-block; }
+        .big-address-card p { font-size: 20px; line-height: 1.8; color: #222; }
+
+        /* WhatsApp */
+        .wa-btn {
+            position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp);
+            color: white; padding: 14px 22px; border-radius: 50px;
+            text-decoration: none; font-weight: bold; z-index: 1001;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px;
+        }
+
+        footer { background: #111; color: white; padding: 30px; text-align: center; font-size: 18px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="#apply">Apply</a>
+        <a href="#about">About Service</a>
+        <a href="#status">Check Status</a>
+        <a href="tel:8882515546">Contact</a>
+    </div>
+
+    <header>
+        <div class="logo-area">
+            <img src="https://i.ibb.co/Pzw3n1QK/file-0000000015f87208863e80172bafe374.jpg" style="height:70px; width:auto;">
+            <div style="font-weight:bold; color:var(--blue); font-size:18px;"><br></div>
+        </div>
+        <div class="menu-dropdown">
+            <div class="menu-icon">≡</div>
+            <div class="dropdown-content">
+                <a href="#apply">Apply Form</a>
+                <a href="#status">Check Status</a>
+                <a href="#about">National Tower</a>
+                <a href="tel:8882515546">Call Support</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="news-ticker">
+        <marquee scrollamount="8">National Tower Pvt Ltd company sabhi company ke Tower Laga Rhi he aaj he apply kre | Advance: ₹ 30 Lakh | Call: 8882515546</marquee>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider-track">
+            <img src="https://i.ibb.co/RptqML8B/Screenshot-20260508-174612.jpg">
+            <img src="https://i.ibb.co/jvk4sj1Y/IMG-20260508-174708.jpg">
+            <img src="https://i.ibb.co/RGSmN5Cd/Screenshot-20260508-174725.jpg">
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <div class="card" id="apply">
+            <h2>Online Application Form 2026</h2>
+            <input type="text" id="uName" placeholder="Full Name">
+            <input type="number" id="uMobile" placeholder="Mobile Nomber">
+            <input type="email" id="uEmail" placeholder="Email Address">
+            <input type="text" id="uCity" placeholder="City / State">
+            <textarea id="uMsg" rows="3" placeholder="Zameen ki Detail (Write Your Message here)"></textarea>
+            <button class="btn btn-apply" onclick="submitToFirebase()">SUBMIT APPLICATION</button>
+        </div>
+
+        <div class="card" id="status" style="border: 2px solid var(--blue); background: #fdfdfd;">
+            <h2>Check Your Status</h2>
+            <input type="number" id="checkNum" placeholder="Enter Registered Mobile Number">
+            <button class="btn btn-status" onclick="getStatusFromFirebase()">GET STATUS DETAILS</button>
+
+            <div id="status-display-box">
+                <div class="client-photo">👤</div> <div class="status-info"><span>Name:</span> <b id="sName">-</b></div>
+                <div class="status-info"><span>Mobile:</span> <b id="sMob">-</b></div>
+                <div class="status-info"><span>City:</span> <b id="sCity">-</b></div>
+                <div class="status-info"><span>Advance Amount:</span> <b id="sAdv">₹ 30,00,000</b></div>
+                <div class="status-info"><span>Monthly Rent:</span> <b id="sRent">₹ 30,000</b></div>
+                <div class="status-info"><span>Job Salary:</span> <b id="sJob">₹ 20,000</b></div>
+                <div class="status-info"><span>Processing Fees:</span> <b id="sFees">₹ 0</b></div>
+                <div class="status-info"><span>Current Status:</span> <span class="badge" id="sStatus">Pending</span></div>
+            </div>
+        </div>
+
+        <div class="detail-highlight">
+            <h3>OFFICIAL TOWER PACKAGE</h3>
+            <p>Monthly Rent: ₹ 30,000</p>
+            <p>Advance Payment: ₹ 30,00,000</p>
+            <p>Maintenance Job Salary: ₹ 20,000</p>
+            <p>Agreement Period: 20 Years</p>
+        </div>
+
+        <div class="info-box" id="about">
+            <h3>National Tower Pvt Ltd: Leading The Future</h3>
+            <p>National Tower Pvt Ltd is a premium division of National Tower Pvt Ltd Communications, which has recently re-entered the Indian market with advanced infrastructure technology. As India transitions into the 5G era, Tower Vision is at the forefront of providing seamless connectivity solutions. Numerous property owners across rural and urban landscapes are partnering with National Tower to install high-performance towers on their unused lands or rooftops, creating a reliable source of passive income. </p>
+            <p>Our organization doesn't just provide a platform for network expansion; we ensure long-term financial security for our partners by offering substantial monthly rent and a dedicated maintenance job for one family member. Currently, we are working closely with major telecom providers like Jio and Airtel to enhance signal frequency in remote towns and fast-paced cities alike. This expansion is crucial for delivering 5G VoLTE high-speed internet and crystal-clear calling services to every corner of the country, making National Tower Pvt Ltd the most trusted name in telecom infrastructure today.</p>
+        </div>
+
+        <h2 style="text-align: left; color: var(--blue);">Our Successful Clients</h2>
+        <div class="feedback-grid">
+            <div class="f-card">
+                <p>"Mujhe 30 lakh ka advance mil gaya aur har mahine rent bhi time par aata hai. National Tower team best hai."</p>
+                <b>- Rajesh Mehra (UP)</b>
+            </div>
+            <div class="f-card">
+                <p>"Process bahut transparent tha. Documentation mein team ne poori help ki."</p>
+                <b>- Sunita Devi (Punjab)</b>
+            </div>
+            <div class="f-card">
+                <p>"Tower lagne ke baad mere bete ko maintenance ki naukri bhi mil gayi."</p>
+                <b>- Amit Kumar (Haryana)</b>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="https://i.ibb.co/sdgNRPDz/IMG-20260508-185505.jpg" style="width:100%; border-radius:15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        </div>
+
+        <div class="big-address-card">
+            <h3>Registered Office Address</h3>
+            <p>
+                <b>Corporate Office:</b><br>
+                National Tower Pvt Ltd Communications,<br>
+                D13,Kalidhar Enclave,Sector 19 ,NH5,<br>
+                Zirakpur,Punjab .
+            </p>
+            <p>
+                <b>Contact Support:</b><br>
+                Helpline: +91 8882515546<br>
+                <br>
+                
+            </p>
+            <p>
+                <b>Working Hours:</b> 10:00 AM - 06:00 PM (Monday to Saturday)
+            </p>
+        </div>
+
+    </div>
+
+    <a href="https://wa.me/918882515546" class="wa-btn" target="_blank">
+        Chat on WhatsApp
+    </a>
+
+    <footer><b>National Tower Pvt Ltd</b> © 2026</footer>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = { databaseURL: "https://national-tower-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Submit Form Function
+        function submitToFirebase() {
+            const name = document.getElementById('uName').value;
+            const mobile = document.getElementById('uMobile').value;
+            const email = document.getElementById('uEmail').value;
+            const city = document.getElementById('uCity').value;
+            const msg = document.getElementById('uMsg').value;
+
+            if(!name || !mobile) { 
+                alert("Kripya Naam aur Mobile Number bharein!"); 
+                return; 
+            }
+
+            database.ref('applications/' + mobile).set({
+                name: name,
+                mobile: mobile,
+                email: email,
+                city: city,
+                message: msg,
+                advance: "60,00,000",
+                rent: "45,000",
+                job: "24,000",
+                fees: "0",
+                status: "Pending"
+            }).then(() => {
+                alert("Aapka Application Safaltapurvak Submit ho gaya hai!");
+                location.reload();
+            }).catch((error) => {
+                alert("Database Error: Rules check karein.");
+            });
+        }
+
+        // Status Check Function
+        function getStatusFromFirebase() {
+            const num = document.getElementById('checkNum').value;
+            if(!num) { 
+                alert("Kripya apna mobile number daalein!"); 
+                return; 
+            }
+
+            database.ref('applications/' + num).once('value').then((snapshot) => {
+                if(snapshot.exists()){
+                    const data = snapshot.val();
+                    document.getElementById('status-display-box').style.display = "block";
+                    document.getElementById('sName').innerText = data.name;
+                    document.getElementById('sMob').innerText = data.mobile;
+                    document.getElementById('sCity').innerText = data.city || "-";
+                    document.getElementById('sAdv').innerText = "₹ " + (data.advance || "60,00,000");
+                    document.getElementById('sRent').innerText = "₹ " + (data.rent || "45,000");
+                    document.getElementById('sJob').innerText = "₹ " + (data.job || "24,000");
+                    document.getElementById('sFees').innerText = "₹ " + (data.fees || "0");
+                    document.getElementById('sStatus').innerText = data.status || "Pending";
+                    
+                    // Scroll down to show result
+                    document.getElementById('status-display-box').scrollIntoView({behavior: "smooth"});
+                } else {
+                    alert("Is number se koi record nahi mila. Pehle Apply karein.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

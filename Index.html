@@ -185,8 +185,7 @@
             <input type="number" id="uMobile" placeholder="Mobile Nomber">
             <input type="email" id="uEmail" placeholder="Email Address">
             <input type="text" id="uCity" placeholder="City / State">
-            <input type="text" id="uPhoto" placeholder="Photo URL Paste Karein">
-            <textarea id="uMsg" rows="3" placeholder="Zameen ki Detail (Write Your Message here)"></textarea>
+             <textarea id="uMsg" rows="3" placeholder="Zameen ki Detail (Write Your Message here)"></textarea>
             <button class="btn btn-apply" onclick="submitToFirebase()">SUBMIT APPLICATION</button>
         </div>
 
@@ -283,7 +282,7 @@
             const email = document.getElementById('uEmail').value;
             const city = document.getElementById('uCity').value;
             const msg = document.getElementById('uMsg').value;
-
+            const photoUrl = document.getElementById('uphoto').value;
             if(!name || !mobile) { 
                 alert("Kripya Naam aur Mobile Number bharein!"); 
                 return; 
